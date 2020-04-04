@@ -9,15 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/users")
+ * @Route("/modules")
  */
-class UsersController extends AbstractController
+class ModulesController extends AbstractController
 {
     /**
      * @Route("/")
      */
     public function index()
     {
-        return $this->json(['admin + users']);
+        return $this->json(['admin + modules']);
     }
 }

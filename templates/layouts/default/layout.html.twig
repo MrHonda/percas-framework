@@ -3,5 +3,7 @@
 {% block body %}
     {% include 'layouts/default/navbar.html.twig' %}
     {% include 'layouts/default/sidebar.html.twig' %}
-    {% block content %}{% endblock %}
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
 {% endblock %}
