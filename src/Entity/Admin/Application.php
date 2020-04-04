@@ -2,6 +2,8 @@
 
 namespace Percas\Entity\Admin;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,6 +40,18 @@ class Application
      * @ORM\JoinColumn(nullable=false)
      */
     private $module;
+
+    /**
+     * @var Permission[]
+     *
+     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="application")
+     */
+    private $permissions;
+
+    public function __construct()
+    {
+        $this->permissions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -76,6 +90,37 @@ class Application
     public function setModule(?Module $module): self
     {
         $this->module = $module;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Permission[]
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setApplication($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->contains($permission)) {
+            $this->permissions->removeElement($permission);
+            // set the owning side to null (unless already changed)
+            if ($permission->getApplication() === $this) {
+                $permission->setApplication(null);
+            }
+        }
 
         return $this;
     }

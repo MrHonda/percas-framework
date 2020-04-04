@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace Percas\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Percas\Entity\Admin\Module;
+use Percas\Entity\Admin\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,5 +53,30 @@ class TestController extends AbstractController
 //        $em->flush();
 
         return $this->json(['doctrine']);
+    }
+
+    /**
+     * @Route("/modules")
+     */
+    public function modules(EntityManagerInterface $em)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $roles = [];
+
+        foreach ($user->getUserRoles() as $role) {
+            $roles[] = $role->getRole();
+        }
+
+        $modules = $em->getRepository(Module::class)->findAllAccessibleModulesByRoles($roles);
+        dump($modules);
+
+        foreach ($modules as $module) {
+            /** @var Module $module */
+            dump($module->getApplications());
+        }
+
+
+        return $this->render('base.html.twig');
     }
 }

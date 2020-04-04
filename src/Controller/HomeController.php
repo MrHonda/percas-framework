@@ -18,6 +18,6 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('home.html.twig');
+        return $this->redirectToRoute('percas_admin_module_index');
     }
 }

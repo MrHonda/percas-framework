@@ -1,6 +1,6 @@
 <?php
 
-namespace Percas\Core\Security;
+namespace Percas\Core\Security\Authenticator;
 
 use Percas\Entity\Admin\User;
 use Doctrine\ORM\EntityManagerInterface;

@@ -5,12 +5,12 @@ declare(strict_types=1);
 
 namespace Percas\Controller\Admin;
 
-use Percas\Core\Controller\AbstractFrameworkController;
+use Percas\Core\Controller\AbstractLayoutController;
 use Percas\Core\Layout\DefaultLayout;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ModuleController extends AbstractFrameworkController
+class ModuleController extends AbstractLayoutController
 {
     /**
      * @param DefaultLayout $layout

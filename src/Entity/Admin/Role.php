@@ -31,9 +31,17 @@ class Role
      */
     private $userRoles;
 
+    /**
+     * @var Permission[]
+     *
+     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="role")
+     */
+    private $permissions;
+
     public function __construct()
     {
         $this->userRoles = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -78,6 +86,37 @@ class Role
             // set the owning side to null (unless already changed)
             if ($userRole->getRole() === $this) {
                 $userRole->setRole(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Permission[]
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->contains($permission)) {
+            $this->permissions->removeElement($permission);
+            // set the owning side to null (unless already changed)
+            if ($permission->getRole() === $this) {
+                $permission->setRole(null);
             }
         }
 

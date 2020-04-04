@@ -2,7 +2,7 @@
 
 namespace Percas\Controller;
 
-use Percas\Core\Security\LoginFormAuthenticator;
+use Percas\Core\Security\Authenticator\LoginFormAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

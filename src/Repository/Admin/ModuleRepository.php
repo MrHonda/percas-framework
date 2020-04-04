@@ -5,6 +5,9 @@ namespace Percas\Repository\Admin;
 use Percas\Entity\Admin\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Percas\Entity\Admin\Permission;
+use Percas\Entity\Admin\Role;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Module|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +20,34 @@ class ModuleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Module::class);
+    }
+
+    /**
+     * @param Role[] $roles
+     * @return array
+     */
+    public function findAllAccessibleModulesByRoles(array $roles): array
+    {
+        $qb = $this->createQueryBuilder('mod');
+        $modules = $qb
+            ->select('mod')
+            ->innerJoin('mod.applications', 'apps')
+            ->innerJoin('apps.permissions', 'perms')
+            ->andWhere('perms.key = :key')
+            ->andWhere(
+                $qb->expr()->in('perms.role', ':roles')
+            )
+            ->setParameters(['key' => Permission::PERMISSION_ACCESS, 'roles' => $roles])
+            ->getQuery()
+            ->getResult();
+
+        $qb
+            ->select('PARTIAL mod.{id}, apps2')
+            ->innerJoin('mod.applications', 'apps2')
+            ->getQuery()
+            ->getResult();
+
+        return $modules;
     }
 
     // /**

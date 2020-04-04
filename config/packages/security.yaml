@@ -19,7 +19,7 @@ security:
             provider: percas_user_provider
             guard:
                 authenticators:
-                    - Percas\Core\Security\LoginFormAuthenticator
+                    - Percas\Core\Security\Authenticator\LoginFormAuthenticator
             logout:
                 path: percas_security_logout
                 # where to redirect after logout

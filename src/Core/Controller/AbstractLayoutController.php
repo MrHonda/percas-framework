@@ -10,7 +10,7 @@ use Percas\Core\Layout\LayoutInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-class AbstractFrameworkController extends AbstractController
+class AbstractLayoutController extends AbstractController
 {
     /**
      * @var LayoutInterface|null
