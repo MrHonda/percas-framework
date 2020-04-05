@@ -39,6 +39,11 @@ class User implements UserInterface
      */
     private $userRoles;
 
+    /**
+     * @var Role[]
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->userRoles = new ArrayCollection();
@@ -130,6 +135,16 @@ class User implements UserInterface
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @param Role[] $roles
+     * @return $this
+     */
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
         return $this;
     }
 }

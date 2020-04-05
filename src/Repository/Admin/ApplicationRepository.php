@@ -2,6 +2,7 @@
 
 namespace Percas\Repository\Admin;
 
+use Doctrine\ORM\NonUniqueResultException;
 use Percas\Entity\Admin\Application;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -17,6 +18,21 @@ class ApplicationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Application::class);
+    }
+
+    public function findByLink(string $link): ?Application
+    {
+        try {
+            return $this->createQueryBuilder('apps')
+                ->innerJoin('apps.module', 'mod')
+                ->andWhere('CONCAT(mod.link, apps.link) LIKE :link')
+                ->setParameters(['link' => $link . '%'])
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            return null;
+        }
     }
 
     // /**

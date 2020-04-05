@@ -6,16 +6,16 @@ declare(strict_types=1);
 namespace Percas\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Percas\Core\Controller\AbstractFrameworkController;
 use Percas\Entity\Admin\Module;
 use Percas\Entity\Admin\User;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/test")
  */
-class TestController extends AbstractController
+class TestController extends AbstractFrameworkController
 {
     /**
      * @Route("/doctrine")
