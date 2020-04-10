@@ -2,6 +2,8 @@
 
 namespace Percas\Entity\Admin;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,20 +29,31 @@ class Permission
     private $key;
 
     /**
+     * @var Module
+     *
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Module", inversedBy="permissions")
+     */
+    private $module;
+
+    /**
      * @var Application
      *
      * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Application", inversedBy="permissions")
-     * @ORM\JoinColumn(nullable=false)
      */
     private $application;
 
     /**
-     * @var Role
+     * @var Role[]
      *
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Role", inversedBy="permissions")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToMany(targetEntity="Percas\Entity\Admin\Role", inversedBy="permissions")
+     * @ORM\JoinTable(name="adm_permissions_roles")
      */
-    private $role;
+    private $roles = [];
+
+    public function __construct()
+    {
+        $this->roles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -71,14 +84,40 @@ class Permission
         return $this;
     }
 
-    public function getRole(): ?Role
+    /**
+     * @return Collection|Role[]
+     */
+    public function getRoles(): Collection
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(?Role $role): self
+    public function addRole(Role $role): self
     {
-        $this->role = $role;
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+        }
+
+        return $this;
+    }
+
+    public function getModule(): ?Module
+    {
+        return $this->module;
+    }
+
+    public function setModule(?Module $module): self
+    {
+        $this->module = $module;
 
         return $this;
     }

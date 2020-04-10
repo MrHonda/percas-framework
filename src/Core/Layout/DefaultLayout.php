@@ -29,7 +29,7 @@ class DefaultLayout extends AbstractLayout
     public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em)
     {
         $this->user = $this->getUserFromTokenStorage($tokenStorage);
-        $this->modules = $em->getRepository(Module::class)->findAll();
+//        $this->modules = $em->getRepository(Module::class)->findAll();
     }
 
     /**

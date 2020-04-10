@@ -40,9 +40,14 @@ class User implements UserInterface
     private $userRoles;
 
     /**
+     * @var Role
+     */
+    private $mainRole;
+
+    /**
      * @var Role[]
      */
-    private $roles = [];
+    private $subRoles = [];
 
     public function __construct()
     {
@@ -139,12 +144,63 @@ class User implements UserInterface
     }
 
     /**
-     * @param Role[] $roles
+     * @return Role
+     */
+    public function getMainRole(): Role
+    {
+        return $this->mainRole;
+    }
+
+    /**
+     * @param Role $mainRole
      * @return $this
      */
-    public function setRoles(array $roles): self
+    public function setMainRole(Role $mainRole): self
     {
-        $this->roles = $roles;
+        $this->mainRole = $mainRole;
         return $this;
+    }
+
+    /**
+     * @return Role[]
+     */
+    public function getSubRoles(): array
+    {
+        return $this->subRoles;
+    }
+
+    /**
+     * @param Role[] $subRoles
+     * @return $this
+     */
+    public function setSubRoles(array $subRoles): self
+    {
+        $this->subRoles = $subRoles;
+        return $this;
+    }
+
+    /**
+     * @param UserRole[] $userRoles
+     */
+    public function initializeRoles(array $userRoles): void
+    {
+        $this->mainRole = null;
+        $this->subRoles = [];
+
+        foreach ($userRoles as $userRole) {
+            if ($userRole->getIsMain()) {
+                $this->mainRole = $userRole->getRole();
+            } else {
+                $this->subRoles[] = $userRole->getRole();
+            }
+        }
+    }
+
+    /**
+     * @return Role[]
+     */
+    public function getAllRoles(): array
+    {
+        return $this->mainRole ? array_merge([$this->mainRole], $this->subRoles) : $this->subRoles;
     }
 }

@@ -44,7 +44,7 @@ class AutherizationSubscriber implements EventSubscriberInterface
     {
         $eventController = $event->getController();
 
-        if(!is_array($eventController)) {
+        if (!is_array($eventController)) {
             return;
         }
 
@@ -54,9 +54,8 @@ class AutherizationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        dump($event->getRequest()->getPathInfo());
-        $authenticationService = new AutherizationService($this->em, $controller->getUser(), $event->getRequest()->attributes->get('_route'));
+        $authenticationService = new AutherizationService($this->em, $controller->getUser(), $event->getRequest()->getPathInfo());
 
-        dump($authenticationService);
+        $authenticationService->denyUnlessGranted('access');
     }
 }

@@ -7,9 +7,10 @@ security:
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         percas_user_provider:
-            entity:
-                class: Percas\Entity\Admin\User
-                property: username
+            id: Percas\Core\Security\Provider\UserProvider
+#            entity:
+#                class: Percas\Entity\Admin\User
+#                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

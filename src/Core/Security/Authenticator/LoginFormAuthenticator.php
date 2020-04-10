@@ -25,7 +25,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'percas_security_login';
-    public const AFTER_LOGIN_REDIRECT = 'percas_home_index';
+    public const AFTER_LOGIN_REDIRECT = 'percas_admin_module_index';
 
     /**
      * @var EntityManagerInterface

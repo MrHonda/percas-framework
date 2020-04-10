@@ -5,19 +5,20 @@ declare(strict_types=1);
 
 namespace Percas\Controller\Admin;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Percas\Core\Controller\AbstractLayoutController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/users")
  */
-class UsersController extends AbstractController
+class UsersController extends AbstractLayoutController
 {
     /**
      * @Route("/")
      */
-    public function index()
+    public function index(): Response
     {
-        return $this->json(['admin + users']);
+        return $this->renderLayout('modules/admin/admin.html.twig');
     }
 }

@@ -34,7 +34,7 @@ class Role
     /**
      * @var Permission[]
      *
-     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="role")
+     * @ORM\ManyToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="roles")
      */
     private $permissions;
 
@@ -104,7 +104,7 @@ class Role
     {
         if (!$this->permissions->contains($permission)) {
             $this->permissions[] = $permission;
-            $permission->setRole($this);
+            $permission->addRole($this);
         }
 
         return $this;
@@ -114,10 +114,7 @@ class Role
     {
         if ($this->permissions->contains($permission)) {
             $this->permissions->removeElement($permission);
-            // set the owning side to null (unless already changed)
-            if ($permission->getRole() === $this) {
-                $permission->setRole(null);
-            }
+            $permission->removeRole($this);
         }
 
         return $this;

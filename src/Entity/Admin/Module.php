@@ -40,9 +40,17 @@ class Module
      */
     private $applications;
 
+    /**
+     * @var Permission[]
+     *
+     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="module")
+     */
+    private $permissions;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,6 +107,37 @@ class Module
             // set the owning side to null (unless already changed)
             if ($application->getModule() === $this) {
                 $application->setModule(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Permission[]
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setApplication($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->contains($permission)) {
+            $this->permissions->removeElement($permission);
+            // set the owning side to null (unless already changed)
+            if ($permission->getApplication() === $this) {
+                $permission->setApplication(null);
             }
         }
 
