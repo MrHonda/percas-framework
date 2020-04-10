@@ -38,20 +38,4 @@ class ApplicationRepository extends ServiceEntityRepository
             return null;
         }
     }
-
-    /**
-     * @param Role[] $roles
-     * @return Application[]
-     */
-    public function findAccessibleByRoles(array $roles): array
-    {
-        return $this->_em
-            ->createQuery('
-                SELECT app
-                FROM Percas\Entity\System\Application app
-                JOIN app.permissions perm WITH perm.key = :key
-            ')
-            ->setParameters(['key' => Permission::PERMISSION_ACCESS])
-            ->getResult();
-    }
 }
