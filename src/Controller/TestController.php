@@ -68,7 +68,7 @@ class TestController extends AbstractFrameworkController
             $roles[] = $role->getRole();
         }
 
-        $modules = $em->getRepository(Module::class)->findAllAccessibleModulesByRoles($roles);
+        $modules = $em->getRepository(Module::class)->findAllAccessibleByRoles($roles);
         dump($modules);
 
         foreach ($modules as $module) {

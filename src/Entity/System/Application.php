@@ -124,4 +124,16 @@ class Application
 
         return $this;
     }
+
+    public function getFullLink(): string
+    {
+        $link = '';
+        $module = $this->getModule();
+
+        if ($module) {
+            $link .= $module->getLink();
+        }
+
+        return $link . $this->getLink() . '/';
+    }
 }

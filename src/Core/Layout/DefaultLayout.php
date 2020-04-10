@@ -30,7 +30,7 @@ class DefaultLayout extends AbstractLayout
     public function __construct(Security $security, EntityManagerInterface $em)
     {
         $this->user = $security->getUser();
-//        $this->modules = $em->getRepository(Module::class)->findAll();
+        $this->modules = $em->getRepository(Module::class)->findAllAccessibleByRoles($this->user->getAllRoles());
     }
 
     /**

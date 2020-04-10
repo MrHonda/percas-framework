@@ -7,6 +7,8 @@ use Percas\Entity\System\Application;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Percas\Entity\System\Module;
+use Percas\Entity\System\Permission;
+use Percas\Entity\System\Role;
 
 /**
  * @method Application|null find($id, $lockMode = null, $lockVersion = null)
@@ -35,5 +37,21 @@ class ApplicationRepository extends ServiceEntityRepository
         } catch (NonUniqueResultException $e) {
             return null;
         }
+    }
+
+    /**
+     * @param Role[] $roles
+     * @return Application[]
+     */
+    public function findAccessibleByRoles(array $roles): array
+    {
+        return $this->_em
+            ->createQuery('
+                SELECT app
+                FROM Percas\Entity\System\Application app
+                JOIN app.permissions perm WITH perm.key = :key
+            ')
+            ->setParameters(['key' => Permission::PERMISSION_ACCESS])
+            ->getResult();
     }
 }

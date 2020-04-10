@@ -2,12 +2,15 @@
 
 namespace Percas\Repository\System;
 
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\PersistentCollection;
+use Doctrine\ORM\Query;
+use Percas\Entity\System\Application;
 use Percas\Entity\System\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Percas\Entity\System\Permission;
 use Percas\Entity\System\Role;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method Module|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,56 +29,38 @@ class ModuleRepository extends ServiceEntityRepository
      * @param Role[] $roles
      * @return array
      */
-    public function findAllAccessibleModulesByRoles(array $roles): array
+    public function findAllAccessibleByRoles(array $roles): array
     {
-        $qb = $this->createQueryBuilder('mod');
-        $modules = $qb
-            ->select('mod')
-            ->innerJoin('mod.applications', 'apps')
-            ->innerJoin('apps.permissions', 'perms')
-            ->andWhere('perms.key = :key')
-            ->andWhere(
-                $qb->expr()->in('perms.role', ':roles')
-            )
+        /** @var Module[] $modules */
+        $modules = $this->_em
+            ->createQuery('
+                SELECT mod
+                FROM Percas\Entity\System\Module mod
+                JOIN mod.permissions perm WITH perm.key = :key
+                JOIN perm.roles role WITH role.id IN (:roles)
+            ')
             ->setParameters(['key' => Permission::PERMISSION_ACCESS, 'roles' => $roles])
-            ->getQuery()
             ->getResult();
 
-        $qb
-            ->select('PARTIAL mod.{id}, apps2')
-            ->innerJoin('mod.applications', 'apps2')
-            ->getQuery()
+        $this->_em
+            ->createQuery('
+                SELECT PARTIAL mod.{id}, app
+                FROM Percas\Entity\System\Module mod
+                JOIN mod.applications app
+                JOIN app.permissions perm WITH perm.key = :key
+                JOIN perm.roles role WITH role.id IN (:roles)
+            ')
+            ->setParameters(['key' => Permission::PERMISSION_ACCESS, 'roles' => $roles])
             ->getResult();
+
+        foreach ($modules as $module) {
+            $applications = $module->getApplications();
+
+            if ($applications instanceof PersistentCollection) {
+                $applications->setInitialized(true);
+            }
+        }
 
         return $modules;
     }
-
-    // /**
-    //  * @return Module[] Returns an array of Module objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Module
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
