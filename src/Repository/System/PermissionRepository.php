@@ -1,13 +1,13 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
-use Percas\Entity\Admin\Application;
-use Percas\Entity\Admin\Module;
-use Percas\Entity\Admin\Permission;
+use Percas\Entity\System\Application;
+use Percas\Entity\System\Module;
+use Percas\Entity\System\Permission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Percas\Entity\Admin\Role;
+use Percas\Entity\System\Role;
 
 /**
  * @method Permission|null find($id, $lockMode = null, $lockVersion = null)
@@ -32,7 +32,7 @@ class PermissionRepository extends ServiceEntityRepository
         return $this->_em
             ->createQuery('
                 SELECT perm
-                FROM Percas\Entity\Admin\Permission perm
+                FROM Percas\Entity\System\Permission perm
                 JOIN perm.roles role
                 WHERE perm.module = :module AND role.id IN (:roles)
             ')
@@ -50,7 +50,7 @@ class PermissionRepository extends ServiceEntityRepository
         return $this->_em
             ->createQuery('
                 SELECT perm
-                FROM Percas\Entity\Admin\Permission perm
+                FROM Percas\Entity\System\Permission perm
                 JOIN perm.roles role
                 WHERE perm.application = :application AND role.id IN (:roles)
             ')

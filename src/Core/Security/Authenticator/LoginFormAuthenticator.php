@@ -2,7 +2,7 @@
 
 namespace Percas\Core\Security\Authenticator;
 
-use Percas\Entity\Admin\User;
+use Percas\Entity\System\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'percas_security_login';
-    public const AFTER_LOGIN_REDIRECT = 'percas_admin_module_index';
+    public const AFTER_LOGIN_REDIRECT = 'percas_home_index';
 
     /**
      * @var EntityManagerInterface

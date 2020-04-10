@@ -6,9 +6,10 @@ declare(strict_types=1);
 namespace Percas\Core\Layout;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Percas\Entity\Admin\Module;
-use Percas\Entity\Admin\User;
+use Percas\Entity\System\Module;
+use Percas\Entity\System\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Security;
 
 class DefaultLayout extends AbstractLayout
 {
@@ -23,12 +24,12 @@ class DefaultLayout extends AbstractLayout
     private $modules = [];
 
     /**
-     * @param TokenStorageInterface $tokenStorage
+     * @param Security $security
      * @param EntityManagerInterface $em
      */
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManagerInterface $em)
+    public function __construct(Security $security, EntityManagerInterface $em)
     {
-        $this->user = $this->getUserFromTokenStorage($tokenStorage);
+        $this->user = $security->getUser();
 //        $this->modules = $em->getRepository(Module::class)->findAll();
     }
 

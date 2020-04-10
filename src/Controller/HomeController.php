@@ -18,6 +18,6 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->redirectToRoute('percas_admin_module_index');
+        return $this->redirectToRoute('percas_system_module_index');
     }
 }

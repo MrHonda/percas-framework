@@ -1,8 +1,8 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
-use Percas\Entity\Admin\UserRole;
+use Percas\Entity\System\UserRole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
-use Percas\Entity\Admin\User;
+use Percas\Entity\System\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;

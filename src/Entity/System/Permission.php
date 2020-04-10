@@ -1,14 +1,14 @@
 <?php
 
-namespace Percas\Entity\Admin;
+namespace Percas\Entity\System;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Percas\Repository\Admin\PermissionRepository")
- * @ORM\Table(name="adm_permissions")
+ * @ORM\Entity(repositoryClass="Percas\Repository\System\PermissionRepository")
+ * @ORM\Table(name="sys_permissions")
  */
 class Permission
 {
@@ -31,22 +31,22 @@ class Permission
     /**
      * @var Module
      *
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Module", inversedBy="permissions")
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\System\Module", inversedBy="permissions")
      */
     private $module;
 
     /**
      * @var Application
      *
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Application", inversedBy="permissions")
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\System\Application", inversedBy="permissions")
      */
     private $application;
 
     /**
      * @var Role[]
      *
-     * @ORM\ManyToMany(targetEntity="Percas\Entity\Admin\Role", inversedBy="permissions")
-     * @ORM\JoinTable(name="adm_permissions_roles")
+     * @ORM\ManyToMany(targetEntity="Percas\Entity\System\Role", inversedBy="permissions")
+     * @ORM\JoinTable(name="sys_permissions_roles")
      */
     private $roles = [];
 

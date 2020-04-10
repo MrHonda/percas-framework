@@ -1,6 +1,6 @@
 <?php
 
-namespace Percas\Entity\Admin;
+namespace Percas\Entity\System;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="Percas\Repository\Admin\UserRepository")
- * @ORM\Table(name="adm_users")
+ * @ORM\Entity(repositoryClass="Percas\Repository\System\UserRepository")
+ * @ORM\Table(name="sys_users")
  */
 class User implements UserInterface
 {
@@ -35,7 +35,7 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\UserRole", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Percas\Entity\System\UserRole", mappedBy="user", cascade={"persist"})
      */
     private $userRoles;
 

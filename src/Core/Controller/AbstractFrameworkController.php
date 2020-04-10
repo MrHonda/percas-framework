@@ -5,23 +5,22 @@ declare(strict_types=1);
 
 namespace Percas\Core\Controller;
 
-
-use Percas\Entity\Admin\User;
+use Percas\Core\Security\Autherization\AutherizationCheckerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 abstract class AbstractFrameworkController extends AbstractController
 {
     /**
-     * @return User|null
+     * @var AutherizationCheckerInterface
      */
-    public function getUser(): ?User
+    protected $authorizationChecker;
+
+    /**
+     * AbstractFrameworkController constructor.
+     * @param AutherizationCheckerInterface $authorizationChecker
+     */
+    public function __construct(AutherizationCheckerInterface $authorizationChecker)
     {
-        $user = parent::getUser();
-
-        if ($user instanceof User) {
-            return $user;
-        }
-
-        return null;
+        $this->authorizationChecker = $authorizationChecker;
     }
 }

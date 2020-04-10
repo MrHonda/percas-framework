@@ -1,16 +1,16 @@
 <?php
 
-namespace Percas\Entity\Admin;
+namespace Percas\Entity\System;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Percas\Repository\Admin\RoleRepository")
- * @ORM\Table(name="adm_roles")
+ * @ORM\Entity(repositoryClass="Percas\Repository\System\ApplicationRepository")
+ * @ORM\Table(name="sys_applications")
  */
-class Role
+class Application
 {
     /**
      * @ORM\Id()
@@ -22,25 +22,34 @@ class Role
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=50, nullable=false, unique=true)
+     * @ORM\Column(type="string", length=20, nullable=false, unique=true)
      */
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\UserRole", mappedBy="role", cascade={"persist"})
+     * @var string
+     *
+     * @ORM\Column(type="string", length=30, nullable=false, unique=true)
      */
-    private $userRoles;
+    private $link;
+
+    /**
+     * @var Module
+     *
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\System\Module", inversedBy="applications")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $module;
 
     /**
      * @var Permission[]
      *
-     * @ORM\ManyToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="roles")
+     * @ORM\OneToMany(targetEntity="Percas\Entity\System\Permission", mappedBy="application")
      */
     private $permissions;
 
     public function __construct()
     {
-        $this->userRoles = new ArrayCollection();
         $this->permissions = new ArrayCollection();
     }
 
@@ -61,33 +70,26 @@ class Role
         return $this;
     }
 
-    /**
-     * @return Collection|UserRole[]
-     */
-    public function getUserRoles(): Collection
+    public function getLink(): ?string
     {
-        return $this->userRoles;
+        return $this->link;
     }
 
-    public function addUserRole(UserRole $userRole): self
+    public function setLink(string $link): self
     {
-        if (!$this->userRoles->contains($userRole)) {
-            $this->userRoles[] = $userRole;
-            $userRole->setRole($this);
-        }
+        $this->link = $link;
 
         return $this;
     }
 
-    public function removeUserRole(UserRole $userRole): self
+    public function getModule(): ?Module
     {
-        if ($this->userRoles->contains($userRole)) {
-            $this->userRoles->removeElement($userRole);
-            // set the owning side to null (unless already changed)
-            if ($userRole->getRole() === $this) {
-                $userRole->setRole(null);
-            }
-        }
+        return $this->module;
+    }
+
+    public function setModule(?Module $module): self
+    {
+        $this->module = $module;
 
         return $this;
     }
@@ -104,7 +106,7 @@ class Role
     {
         if (!$this->permissions->contains($permission)) {
             $this->permissions[] = $permission;
-            $permission->addRole($this);
+            $permission->setApplication($this);
         }
 
         return $this;
@@ -114,7 +116,10 @@ class Role
     {
         if ($this->permissions->contains($permission)) {
             $this->permissions->removeElement($permission);
-            $permission->removeRole($this);
+            // set the owning side to null (unless already changed)
+            if ($permission->getApplication() === $this) {
+                $permission->setApplication(null);
+            }
         }
 
         return $this;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
 use Doctrine\ORM\NonUniqueResultException;
-use Percas\Entity\Admin\Application;
+use Percas\Entity\System\Application;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Percas\Entity\Admin\Module;
+use Percas\Entity\System\Module;
 
 /**
  * @method Application|null find($id, $lockMode = null, $lockVersion = null)
@@ -27,7 +27,7 @@ class ApplicationRepository extends ServiceEntityRepository
             return $this->_em
                 ->createQuery('
                     SELECT app
-                    FROM Percas\Entity\Admin\Application app
+                    FROM Percas\Entity\System\Application app
                     WHERE app.module = :module AND app.link = :link
                 ')
                 ->setParameters(['module' => $module, 'link' => $link])

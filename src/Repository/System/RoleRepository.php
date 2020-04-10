@@ -1,12 +1,12 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
 use Doctrine\Common\Collections\Collection;
-use Percas\Entity\Admin\Role;
+use Percas\Entity\System\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Percas\Entity\Admin\UserRole;
+use Percas\Entity\System\UserRole;
 
 /**
  * @method Role|null find($id, $lockMode = null, $lockVersion = null)
@@ -30,7 +30,7 @@ class RoleRepository extends ServiceEntityRepository
         return $this->_em
             ->createQuery('
                 SELECT role
-                FROM Percas\Entity\Admin\Role role
+                FROM Percas\Entity\System\Role role
                 JOIN role.userRoles urole
                 WHERE urole.id IN (:userRoles)
             ')

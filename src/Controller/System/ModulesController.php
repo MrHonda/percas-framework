@@ -3,22 +3,23 @@
 declare(strict_types=1);
 
 
-namespace Percas\Controller\Admin;
+namespace Percas\Controller\System;
 
 use Percas\Core\Controller\AbstractLayoutController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/users")
+ * @Route("/modules")
  */
-class UsersController extends AbstractLayoutController
+class ModulesController extends AbstractLayoutController
 {
+
     /**
      * @Route("/")
      */
     public function index(): Response
     {
-        return $this->renderLayout('modules/admin/admin.html.twig');
+        return $this->render('modules/admin/admin.html.twig');
     }
 }

@@ -8,8 +8,8 @@ namespace Percas\Core\Security\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Percas\Entity\Admin\Role;
-use Percas\Entity\Admin\User;
+use Percas\Entity\System\Role;
+use Percas\Entity\System\User;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Symfony\Component\Security\Core\User\UserInterface;
 

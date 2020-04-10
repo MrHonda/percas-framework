@@ -5,34 +5,33 @@ declare(strict_types=1);
 
 namespace Percas\Core\Controller;
 
-
 use Percas\Core\Layout\LayoutInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Percas\Core\Security\Autherization\AutherizationCheckerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractLayoutController extends AbstractFrameworkController
 {
     /**
-     * @var LayoutInterface|null
+     * @var LayoutInterface
      */
     protected $layout;
 
     /**
-     * @param LayoutInterface|null $layout
+     * @param AutherizationCheckerInterface $autherizationChecker
+     * @param LayoutInterface $layout
      */
-    public function __construct(?LayoutInterface $layout = null)
+    public function __construct(AutherizationCheckerInterface $autherizationChecker, LayoutInterface $layout)
     {
+        parent::__construct($autherizationChecker);
         $this->layout = $layout;
     }
 
     /**
-     * @param string $view
-     * @param array $paramenters
-     * @return Response
+     * @inheritDoc
      */
-    protected function renderLayout(string $view, array $paramenters = []): Response
+    protected function render(string $view, array $parameters = [], Response $response = null): Response
     {
-        $paramenters['layout'] = $this->layout;
-        return $this->render($view, $paramenters);
+        $parameters['layout'] = $this->layout;
+        return parent::render($view, $parameters, $response);
     }
 }

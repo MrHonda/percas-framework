@@ -6,7 +6,7 @@ kernel:
     resource: ../../src/Kernel.php
     type: annotation
 
-admin:
-    resource: ../../src/Controller/Admin
+system:
+    resource: ../../src/Controller/System
     type: annotation
-    prefix: /admin
+    prefix: /system

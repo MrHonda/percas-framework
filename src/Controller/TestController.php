@@ -7,8 +7,8 @@ namespace Percas\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Percas\Core\Controller\AbstractFrameworkController;
-use Percas\Entity\Admin\Module;
-use Percas\Entity\Admin\User;
+use Percas\Entity\System\Module;
+use Percas\Entity\System\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 

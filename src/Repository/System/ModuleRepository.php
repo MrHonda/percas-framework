@@ -1,12 +1,12 @@
 <?php
 
-namespace Percas\Repository\Admin;
+namespace Percas\Repository\System;
 
-use Percas\Entity\Admin\Module;
+use Percas\Entity\System\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Percas\Entity\Admin\Permission;
-use Percas\Entity\Admin\Role;
+use Percas\Entity\System\Permission;
+use Percas\Entity\System\Role;
 use function Doctrine\ORM\QueryBuilder;
 
 /**

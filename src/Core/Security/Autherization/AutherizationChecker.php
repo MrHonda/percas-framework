@@ -6,14 +6,15 @@ declare(strict_types=1);
 namespace Percas\Core\Security\Autherization;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Percas\Entity\Admin\Application;
-use Percas\Entity\Admin\Module;
-use Percas\Entity\Admin\Permission;
-use Percas\Entity\Admin\User;
-use PhpParser\Node\Expr\AssignOp\Mod;
+use Percas\Entity\System\Application;
+use Percas\Entity\System\Module;
+use Percas\Entity\System\Permission;
+use Percas\Entity\System\User;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Security;
 
-class AutherizationService implements AutherizationServiceInterface
+class AutherizationChecker implements AutherizationCheckerInterface
 {
     /**
      * @var EntityManagerInterface
@@ -48,15 +49,15 @@ class AutherizationService implements AutherizationServiceInterface
     /**
      * AutherizationService constructor.
      * @param EntityManagerInterface $em
-     * @param User|null $user
-     * @param string $link
+     * @param Security $security
+     * @param RequestStack $requestStack
      */
-    public function __construct(EntityManagerInterface $em, ?User $user, string $link)
+    public function __construct(EntityManagerInterface $em, Security $security, RequestStack $requestStack)
     {
         $this->em = $em;
-        $this->user = $user;
+        $this->user = $security->getUser();
 
-        $parsedLink = $this->parseLink($link);
+        $parsedLink = $this->parseLink($requestStack->getCurrentRequest()->getPathInfo());
 
         if ($parsedLink->modulePath) {
             $this->module = $this->findModule($parsedLink->modulePath);
@@ -149,7 +150,7 @@ class AutherizationService implements AutherizationServiceInterface
     }
 
     /**
-     * @param string $permKey
+     * @inheritDoc
      */
     public function denyUnlessGranted(string $permKey): void
     {

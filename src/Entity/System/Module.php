@@ -1,16 +1,16 @@
 <?php
 
-namespace Percas\Entity\Admin;
+namespace Percas\Entity\System;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Percas\Repository\Admin\ApplicationRepository")
- * @ORM\Table(name="adm_applications")
+ * @ORM\Entity(repositoryClass="Percas\Repository\System\ModuleRepository")
+ * @ORM\Table(name="sys_modules")
  */
-class Application
+class Module
 {
     /**
      * @ORM\Id()
@@ -34,22 +34,22 @@ class Application
     private $link;
 
     /**
-     * @var Module
+     * @var Application[]
      *
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Module", inversedBy="applications")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity="Percas\Entity\System\Application", mappedBy="module")
      */
-    private $module;
+    private $applications;
 
     /**
      * @var Permission[]
      *
-     * @ORM\OneToMany(targetEntity="Percas\Entity\Admin\Permission", mappedBy="application")
+     * @ORM\OneToMany(targetEntity="Percas\Entity\System\Permission", mappedBy="module")
      */
     private $permissions;
 
     public function __construct()
     {
+        $this->applications = new ArrayCollection();
         $this->permissions = new ArrayCollection();
     }
 
@@ -82,14 +82,33 @@ class Application
         return $this;
     }
 
-    public function getModule(): ?Module
+    /**
+     * @return Collection|Application[]
+     */
+    public function getApplications(): Collection
     {
-        return $this->module;
+        return $this->applications;
     }
 
-    public function setModule(?Module $module): self
+    public function addApplication(Application $application): self
     {
-        $this->module = $module;
+        if (!$this->applications->contains($application)) {
+            $this->applications[] = $application;
+            $application->setModule($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): self
+    {
+        if ($this->applications->contains($application)) {
+            $this->applications->removeElement($application);
+            // set the owning side to null (unless already changed)
+            if ($application->getModule() === $this) {
+                $application->setModule(null);
+            }
+        }
 
         return $this;
     }

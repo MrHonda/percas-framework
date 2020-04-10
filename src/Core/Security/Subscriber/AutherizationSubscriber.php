@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Event\Subscriber;
+namespace Percas\Core\Security\Subscriber;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Percas\Core\Controller\AbstractFrameworkController;
-use Percas\Core\Security\Autherization\AutherizationService;
+use Percas\Core\Security\Autherization\AutherizationCheckerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -15,9 +15,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class AutherizationSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var EntityManagerInterface
+     * @var AutherizationCheckerInterface
      */
-    private $em;
+    private $autherizationChecker;
 
     /**
      * @inheritDoc
@@ -34,10 +34,11 @@ class AutherizationSubscriber implements EventSubscriberInterface
     /**
      * AutherizationSubscriber constructor.
      * @param EntityManagerInterface $em
+     * @param AutherizationCheckerInterface $autherizationChecker
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, AutherizationCheckerInterface $autherizationChecker)
     {
-        $this->em = $em;
+        $this->autherizationChecker = $autherizationChecker;
     }
 
     public function processAutherization(ControllerEvent $event): void
@@ -54,8 +55,6 @@ class AutherizationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $authenticationService = new AutherizationService($this->em, $controller->getUser(), $event->getRequest()->getPathInfo());
-
-        $authenticationService->denyUnlessGranted('access');
+        $this->autherizationChecker->denyUnlessGranted('access');
     }
 }

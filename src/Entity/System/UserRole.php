@@ -1,12 +1,12 @@
 <?php
 
-namespace Percas\Entity\Admin;
+namespace Percas\Entity\System;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Percas\Repository\Admin\UserRoleRepository")
- * @ORM\Table(name="adm_users_roles")
+ * @ORM\Entity(repositoryClass="Percas\Repository\System\UserRoleRepository")
+ * @ORM\Table(name="sys_users_roles")
  */
 class UserRole
 {
@@ -25,13 +25,13 @@ class UserRole
     private $is_main = false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\User", inversedBy="userRoles", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\System\User", inversedBy="userRoles", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Percas\Entity\Admin\Role", inversedBy="userRoles", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Percas\Entity\System\Role", inversedBy="userRoles", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $role;
