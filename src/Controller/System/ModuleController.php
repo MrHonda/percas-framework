@@ -16,6 +16,6 @@ class ModuleController extends AbstractLayoutController
      */
     public function index(): Response
     {
-        return $this->render('modules/admin/admin.html.twig');
+        return $this->render('modules/system/module.html.twig');
     }
 }
