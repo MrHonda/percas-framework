@@ -14,12 +14,18 @@ class Row
     private $columns = [];
 
     /**
-     * Row constructor.
-     * @param DisplayColumn[] $columns
+     * @var RowAction[]
      */
-    public function __construct(array $columns)
+    private $actions = [];
+
+    /**
+     * @param DisplayColumn[] $columns
+     * @param array $actions
+     */
+    public function __construct(array $columns, array $actions)
     {
         $this->columns = $columns;
+        $this->actions = $actions;
     }
 
     /**
@@ -28,5 +34,13 @@ class Row
     public function getColumns(): array
     {
         return $this->columns;
+    }
+
+    /**
+     * @return RowAction[]
+     */
+    public function getActions(): array
+    {
+        return $this->actions;
     }
 }

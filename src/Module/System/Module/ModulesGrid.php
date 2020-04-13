@@ -33,6 +33,8 @@ class ModulesGrid
         $builder->addTextColumn('name', 'Name');
         $builder->addTextColumn('link', 'Link');
 
+        $builder->addEditRowAction();
+
         return $builder->build();
     }
 

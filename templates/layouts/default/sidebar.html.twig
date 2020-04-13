@@ -4,7 +4,7 @@
     <ul class="modules">
         {% for module in layout.modules %}
             <li>
-                <a href="{{ module.link }}/">{{ module.name }}</a>
+                <a href="{{ module.link }}">{{ module.name }}</a>
                 <ul class="applications">
                     {% for application in module.applications %}
                     <li>

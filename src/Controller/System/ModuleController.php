@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModuleController extends AbstractLayoutController
 {
     /**
-     * @Route("/")
+     * @Route("")
      */
     public function index(): Response
     {

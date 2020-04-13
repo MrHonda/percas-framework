@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 namespace Percas\Core\Component\Grid;
 
+use Percas\Core\Component\Grid\Action\ActionInterface;
+use Percas\Core\Component\Grid\Action\EditAction;
 use Percas\Core\Component\Grid\Column\ColumnInterface;
 use Percas\Core\Component\Grid\Column\IdColumn;
 use Percas\Core\Component\Grid\Column\TextColumn;
@@ -21,6 +23,16 @@ class GridBuilder
      * @var ColumnInterface[]
      */
     private $columns = [];
+
+    /**
+     * @var ActionInterface[]
+     */
+    private $gridActions = [];
+
+    /**
+     * @var ActionInterface[]
+     */
+    private $rowActions = [];
 
     /**
      * GridBuilder constructor.
@@ -63,13 +75,18 @@ class GridBuilder
 
         foreach ($data as $dataRow) {
             $columns = [];
+            $actions = [];
 
             foreach ($this->columns as $column) {
                 $key = $column->getKey();
                 $columns[] = new DisplayColumn($key, $column->getDisplayValue($dataRow[$key]));
             }
 
-            $rows[] = new Row($columns);
+            foreach ($this->rowActions as $rowAction) {
+                $actions[] = new RowAction((int)$dataRow[$rowAction->getKey()], $rowAction->getType(), $rowAction->getName());
+            }
+
+            $rows[] = new Row($columns, $actions);
         }
 
         return $rows;
@@ -145,5 +162,37 @@ class GridBuilder
         $column = new TextColumn($key, $name, $dataSourceKey);
         $this->addColumn($column);
         return $column;
+    }
+
+    /**
+     * @param ActionInterface $action
+     * @return GridBuilder
+     */
+    public function addGridAction(ActionInterface $action): GridBuilder
+    {
+        $this->gridActions[] = $action;
+        return $this;
+    }
+
+    /**
+     * @param ActionInterface $action
+     * @return GridBuilder
+     */
+    public function addRowAction(ActionInterface $action): GridBuilder
+    {
+        $this->rowActions[] = $action;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string $key
+     * @return EditAction
+     */
+    public function addEditRowAction(string $name = 'edit', string $key = 'id'): EditAction
+    {
+        $action = new EditAction($name, $key);
+        $this->addRowAction($action);
+        return $action;
     }
 }

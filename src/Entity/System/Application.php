@@ -134,6 +134,6 @@ class Application
             $link .= $module->getLink();
         }
 
-        return $link . $this->getLink() . '/';
+        return $link . $this->getLink();
     }
 }

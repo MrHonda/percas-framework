@@ -10,3 +10,4 @@ system:
     resource: ../../src/Controller/System
     type: annotation
     prefix: /system
+    trailing_slash_on_root: false

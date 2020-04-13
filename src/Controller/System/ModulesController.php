@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModulesController extends AbstractLayoutController
 {
     /**
-     * @Route("/")
+     * @Route("")
      * @param ModulesGrid $grid
      * @return Response
      */
@@ -25,5 +25,15 @@ class ModulesController extends AbstractLayoutController
         return $this->render('modules/system/modules/index.html.twig', [
             'grid' => $grid->create()
         ]);
+    }
+
+    /**
+     * @Route("/{id}/edit")
+     * @param int $id
+     * @return Response
+     */
+    public function edit(int $id): Response
+    {
+        return $this->json(['Edit', $id]);
     }
 }
