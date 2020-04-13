@@ -72,7 +72,7 @@ class Module
 
     public function getLink(): ?string
     {
-        return $this->link;
+        return $this->link . '/';
     }
 
     public function setLink(string $link): self
