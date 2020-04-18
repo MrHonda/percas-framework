@@ -2,33 +2,27 @@
 
 namespace Percas\Controller;
 
-use Percas\Core\Security\Authenticator\LoginFormAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/login/")
-     * @param AuthenticationUtils $authenticationUtils
+     * @Route("/login")
      * @return Response
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(): Response
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute(LoginFormAuthenticator::AFTER_LOGIN_REDIRECT);
+            return $this->json('success');
         }
 
-        $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->json([]);
     }
 
     /**
-     * @Route("/logout/")
+     * @Route("/logout")
      */
     public function logout(): void
     {

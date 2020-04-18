@@ -2,10 +2,7 @@ security:
     encoders:
         Percas\Entity\System\User:
             algorithm: auto
-
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        # used to reload user from session & other features (e.g. switch_user)
         percas_user_provider:
             id: Percas\Core\Security\Provider\UserProvider
     firewalls:
@@ -14,23 +11,10 @@ security:
             security: false
         main:
             anonymous: lazy
-            provider: percas_user_provider
-            guard:
-                authenticators:
-                    - Percas\Core\Security\Authenticator\LoginFormAuthenticator
+            json_login:
+                check_path: percas_security_login
             logout:
                 path: percas_security_logout
-                # where to redirect after logout
-                target: percas_security_login
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#firewalls-authentication
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+                success_handler: Percas\Core\Security\Handler\LogoutSuccessHandler
     access_control:
-        - { path: ^/login/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^, roles: IS_AUTHENTICATED_FULLY }

@@ -57,7 +57,8 @@ class AutherizationChecker implements AutherizationCheckerInterface
         $this->em = $em;
         $this->user = $security->getUser();
 
-        $parsedLink = $this->parseLink($requestStack->getCurrentRequest()->getPathInfo());
+        $request = $requestStack->getCurrentRequest();
+        $parsedLink = $this->parseLink($request ? $request->getPathInfo() : '');
 
         if ($parsedLink->modulePath) {
             $this->module = $this->findModule($parsedLink->modulePath);
