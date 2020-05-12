@@ -25,9 +25,9 @@ class AutherizationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::CONTROLLER => [
-                ['processAutherization', 0]
-            ]
+//            KernelEvents::CONTROLLER => [
+//                ['processAutherization', 0]
+//            ]
         ];
     }
 
