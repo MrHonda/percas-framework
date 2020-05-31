@@ -68,13 +68,19 @@ class FormBuilder
         $this->readData();
         $this->prepareFields();
 
-        return new Form($this->fields, $this->actions, $this->dataReader->getAction());
+        return new Form($this->dataSource, $this->primaryKeyValue, $this->fields, $this->actions, $this->dataReader->getAction());
     }
 
     private function readData(): void
     {
         if ($this->dataReader->hasData()) {
-            $this->data = $this->dataReader->read();
+            $this->data = [];
+            $data = $this->dataReader->read();
+
+            foreach ($this->fields as $field) {
+                $this->data[$field->getDataSourceKey()] = $data[$field->getKey()];
+            }
+
         } else if ($this->primaryKeyValue > 0) {
             $this->data = $this->dataSource->getData($this->primaryKeyName, $this->primaryKeyValue);
         }
@@ -108,14 +114,14 @@ class FormBuilder
 
     public function addSaveAction(string $text = 'Save'): Action\Save
     {
-        $action = new Action\Save($text);
+        $action = new Action\Save($text, new Action\SaveHandler());
         $this->addAction($action);
         return $action;
     }
 
     public function addCloseAction(string $text = 'Close'): Action\Close
     {
-        $action = new Action\Close($text);
+        $action = new Action\Close($text, new Action\CloseHandler());
         $this->addAction($action);
         return $action;
     }

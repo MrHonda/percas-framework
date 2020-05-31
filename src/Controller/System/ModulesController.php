@@ -32,12 +32,12 @@ class ModulesController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", methods={"GET", "PUT"})
+     * @Route("/{id}")
      * @param ModulesForm $formComponent
      * @param int $id
      * @return Response
      */
-    public function update(ModulesForm $formComponent, int $id): Response
+    public function form(ModulesForm $formComponent, int $id): Response
     {
         $form = $formComponent->create($id);
         $renderer = new FormRenderer\ArrayRenderer();

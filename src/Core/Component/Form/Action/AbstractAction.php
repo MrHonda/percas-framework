@@ -6,6 +6,8 @@ declare(strict_types=1);
 namespace Percas\Core\Component\Form\Action;
 
 
+use Percas\Core\Component\Form\Form;
+
 abstract class AbstractAction implements ActionInterface
 {
     /**
@@ -14,12 +16,19 @@ abstract class AbstractAction implements ActionInterface
     protected $text;
 
     /**
+     * @var HandlerInterface
+     */
+    protected $handler;
+
+    /**
      * AbstractAction constructor.
      * @param string $text
+     * @param HandlerInterface $handler
      */
-    public function __construct(string $text)
+    public function __construct(string $text, HandlerInterface $handler)
     {
         $this->text = $text;
+        $this->handler = $handler;
     }
 
     /**
@@ -28,5 +37,10 @@ abstract class AbstractAction implements ActionInterface
     public function getText(): string
     {
         return $this->text;
+    }
+
+    public function handle(Form $form): void
+    {
+        $this->handler->handle($form);
     }
 }

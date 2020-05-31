@@ -44,4 +44,27 @@ class DoctrineDataSource implements DataSourceInterface
 
         return count($data) > 0 ? $data[0] : [];
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function update(array $fields, int $primaryKeyValue): void
+    {
+        $query = $this->em
+            ->createQueryBuilder()
+            ->update($this->entityClass, 'e')
+            ->where('e.id = :id')
+            ->setParameter(':id', $primaryKeyValue);
+
+        foreach ($fields as $field) {
+            $key = $field->getDataSourceKey();
+            $query
+                ->set('e.' . $key, ':' . $key)
+                ->setParameter(':' . $key, $field->getValue());
+        }
+
+        $query
+            ->getQuery()
+            ->execute();
+    }
 }
