@@ -10,7 +10,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Percas\Core\Component\Form\DataSource\DoctrineDataSource;
 use Percas\Core\Component\Form\Form;
 use Percas\Core\Component\Form\FormBuilder;
+use Percas\Core\Component\Form\Response;
 use Percas\Entity\System\Module;
+
 
 class ModulesForm
 {
@@ -39,5 +41,15 @@ class ModulesForm
         $builder->addCloseAction();
 
         return $builder->build();
+    }
+
+    public function handleSubmit(Form $form): Response\ResponseInterface
+    {
+        try {
+            $form->handleSubmit();
+            return new Response\Success();
+        } catch (\Exception $e) {
+            return new Response\Error($e->getMessage());
+        }
     }
 }

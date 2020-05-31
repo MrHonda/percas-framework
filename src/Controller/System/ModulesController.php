@@ -10,7 +10,6 @@ use Percas\Core\Component\Grid\Renderer as GridRenderer;
 use Percas\Module\System\Modules\ModulesForm;
 use Percas\Module\System\Modules\ModulesGrid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -41,6 +40,12 @@ class ModulesController extends AbstractController
     {
         $form = $formComponent->create($id);
         $renderer = new FormRenderer\ArrayRenderer();
+
+        if ($form->isSubmitted()) {
+            $response = $formComponent->handleSubmit($form);
+            return $this->json($renderer->renderResponse($response), $response->getCode());
+        }
+
         return $this->json($renderer->render($form));
     }
 }

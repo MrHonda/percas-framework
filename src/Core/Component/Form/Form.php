@@ -52,18 +52,14 @@ class Form
         $this->fields = $fields;
         $this->actions = $actions;
         $this->action = $action;
-
-        $this->handleSubmit();
     }
 
-    private function handleSubmit(): void
+    public function handleSubmit(): void
     {
-        if ($this->isSubmitted()) {
-            foreach ($this->actions as $action) {
-                if ($this->action === $action->getName()) {
-                    $action->handle($this);
-                    break;
-                }
+        foreach ($this->actions as $action) {
+            if ($this->action === $action->getName()) {
+                $action->handle($this);
+                break;
             }
         }
     }
