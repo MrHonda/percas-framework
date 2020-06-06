@@ -8,7 +8,10 @@ namespace Percas\Core\Component\Form;
 
 use Percas\Core\Component\Form\Action\ActionInterface;
 use Percas\Core\Component\Form\DataSource\DataSourceInterface;
+use Percas\Core\Component\Form\Exception\ValidationException;
 use Percas\Core\Component\Form\Field\FieldInterface;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ValidatorBuilder;
 
 class Form
 {
@@ -56,11 +59,33 @@ class Form
 
     public function handleSubmit(): void
     {
+        $this->validate();
+
         foreach ($this->actions as $action) {
             if ($this->action === $action->getName()) {
                 $action->handle($this);
                 break;
             }
+        }
+    }
+
+    private function validate(): void
+    {
+        $validator = (new ValidatorBuilder())->getValidator();
+        $errors = [];
+
+        foreach ($this->fields as $field) {
+            $fieldErrors = $validator->validate($field->getValue(), $field->getConstraints());
+            $key = $field->getKey();
+
+            /** @var ConstraintViolationInterface $fieldError */
+            foreach ($fieldErrors as $fieldError) {
+                $errors[$key][] = $fieldError->getMessage();
+            }
+        }
+
+        if (count($errors) > 0) {
+            throw new ValidationException($errors);
         }
     }
 

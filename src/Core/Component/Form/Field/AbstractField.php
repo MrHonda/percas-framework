@@ -6,6 +6,9 @@ declare(strict_types=1);
 namespace Percas\Core\Component\Form\Field;
 
 
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Constraints as Assert;
+
 abstract class AbstractField implements FieldInterface
 {
     /**
@@ -22,6 +25,16 @@ abstract class AbstractField implements FieldInterface
      * @var string
      */
     protected $dataSourceKey;
+
+    /**
+     * @var Constraint[]
+     */
+    protected $baseConstraints = [];
+
+    /**
+     * @var Constraint[]
+     */
+    protected $constraints = [];
 
     public function __construct(string $key, string $name, string $dataSourceKey = '')
     {
@@ -52,5 +65,23 @@ abstract class AbstractField implements FieldInterface
     public function getDataSourceKey(): string
     {
         return $this->dataSourceKey;
+    }
+
+    public function addConstraint(Constraint $constraint): void
+    {
+        $this->constraints[] = $constraint;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConstraints(): array
+    {
+        return array_merge($this->baseConstraints, $this->constraints);
+    }
+
+    public function required(): void
+    {
+        $this->addConstraint(new Assert\NotBlank());
     }
 }

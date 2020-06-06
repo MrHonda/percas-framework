@@ -8,6 +8,7 @@ namespace Percas\Module\System\Modules;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Percas\Core\Component\Form\DataSource\DoctrineDataSource;
+use Percas\Core\Component\Form\Exception\ValidationException;
 use Percas\Core\Component\Form\Form;
 use Percas\Core\Component\Form\FormBuilder;
 use Percas\Core\Component\Form\Response;
@@ -35,7 +36,9 @@ class ModulesForm
         $builder = new FormBuilder(new DoctrineDataSource($this->em, Module::class), $id);
 
         $builder->addTextField('name', 'Name');
-        $builder->addTextField('link', 'Link');
+        $builder
+            ->addTextField('link', 'Link')
+            ->required();
 
         $builder->addSaveAction();
         $builder->addCloseAction();
@@ -48,6 +51,8 @@ class ModulesForm
         try {
             $form->handleSubmit();
             return new Response\Success();
+        } catch (ValidationException $e) {
+            return new Response\Invalid($e->getErrors());
         } catch (\Exception $e) {
             return new Response\Error($e->getMessage());
         }
