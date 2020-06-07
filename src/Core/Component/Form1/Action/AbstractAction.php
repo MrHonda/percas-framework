@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Component\Form\Action;
+namespace Percas\Core\Component\Form1\Action;
 
 
-use Percas\Core\Component\Form\Form;
+use Percas\Core\Component\Form1\Form;
 
 abstract class AbstractAction implements ActionInterface
 {

@@ -6,123 +6,134 @@ declare(strict_types=1);
 namespace Percas\Core\Component\Form;
 
 
-use Percas\Core\Component\Form\Action\ActionInterface;
-use Percas\Core\Component\Form\Action;
-use Percas\Core\Component\Form\DataReader\DataReaderInterface;
-use Percas\Core\Component\Form\DataReader\PostDataReader;
-use Percas\Core\Component\Form\DataSource\DataSourceInterface;
+use Percas\Core\Component\Form\Button\Button;
+use Percas\Core\Component\Form\Button\ButtonInterface;
+use Percas\Core\Component\Form\DataMapper\DataMapperInterface;
+use Percas\Core\Component\Form\DataMapper\DoctrineDataMapper;
 use Percas\Core\Component\Form\Field;
-use Percas\Core\Component\Form\Field\FieldInterface;
+use Percas\Core\Component\Form\RequestReader\DefaultRequestReader;
+use Percas\Core\Component\Form\RequestReader\RequestReaderInterface;
 
 class FormBuilder
 {
     /**
-     * @var DataSourceInterface
+     * @var object|array|\stdClass
      */
-    private $dataSource;
+    private $data;
 
     /**
-     * @var DataReaderInterface
-     */
-    private $dataReader;
-
-    /**
-     * @var string
-     */
-    private $primaryKeyName = 'id';
-
-    /**
-     * @var int
-     */
-    private $primaryKeyValue;
-
-    /**
-     * @var FieldInterface[]
+     * @var Field\FieldInterface[]
      */
     private $fields = [];
 
     /**
-     * @var ActionInterface[]
+     * @var ButtonInterface[]
      */
-    private $actions = [];
+    private $buttons = [];
 
     /**
-     * @var array
+     * @var DataMapperInterface
      */
-    private $data = [];
+    private $dataMapper;
 
     /**
-     * FormBuilder constructor.
-     * @param DataSourceInterface $dataSource
-     * @param int $primaryKeyValue
+     * @var RequestReaderInterface
      */
-    public function __construct(DataSourceInterface $dataSource, int $primaryKeyValue)
+    private $requestReader;
+
+    /**
+     * @var object|array|\stdClass $data
+     */
+    public function __construct($data)
     {
-        $this->dataSource = $dataSource;
-        $this->dataReader = new PostDataReader();
-        $this->primaryKeyValue = $primaryKeyValue;
+        $this->data = $data;
+        $this->dataMapper = new DoctrineDataMapper();
+        $this->requestReader = new DefaultRequestReader();
     }
 
     public function build(): Form
     {
-        $this->readData();
-        $this->prepareFields();
+        $this->initialize();
 
-        return new Form($this->dataSource, $this->primaryKeyValue, $this->fields, $this->actions, $this->dataReader->getAction());
+        return new Form($this->requestReader->getAction(), $this->data, $this->fields, $this->buttons);
     }
 
-    private function readData(): void
+    private function initialize(): void
     {
-        if ($this->dataReader->hasData()) {
-            $this->data = [];
-            $data = $this->dataReader->read();
+        $this->requestReader->read();
 
-            foreach ($this->fields as $field) {
-                $this->data[$field->getDataSourceKey()] = $data[$field->getKey()];
-            }
+        $isSubmitted = $this->requestReader->isSubmitted();
 
-        } else if ($this->primaryKeyValue > 0) {
-            $this->data = $this->dataSource->getData($this->primaryKeyName, $this->primaryKeyValue);
-        }
-    }
-
-    private function prepareFields(): void
-    {
         foreach ($this->fields as $field) {
-            $field->setValue($this->data[$field->getDataSourceKey()]);
+            if ($isSubmitted) {
+                $value = $this->requestReader->getValue($field->getKey());
+            } else {
+                $value = $this->dataMapper->getValue($this->data, $field->getDataKey());
+            }
+            $field->setValue($value);
+        }
+
+        if ($isSubmitted) {
+            foreach ($this->fields as $field) {
+                $this->dataMapper->setValue($this->data, $field->getDataKey(), $field->getValue());
+            }
         }
     }
 
-    public function addField(FieldInterface $field): FormBuilder
+    /**
+     * @param DataMapperInterface $dataMapper
+     */
+    public function setDataMapper(DataMapperInterface $dataMapper): void
+    {
+        $this->dataMapper = $dataMapper;
+    }
+
+    /**
+     * @param RequestReaderInterface $requestReader
+     */
+    public function setRequestReader(RequestReaderInterface $requestReader): void
+    {
+        $this->requestReader = $requestReader;
+    }
+
+    public function addField(Field\FieldInterface $field): void
     {
         $this->fields[] = $field;
-        return $this;
     }
 
-    public function addTextField(string $key, string $name, string $dataSourceKey = ''): Field\Text
+    public function addTextField(string $key, string $name, string $dataKey = ''): Field\Text
     {
-        $field = new Field\Text($key, $name, $dataSourceKey);
+        $field = new Field\Text($key, $name, $dataKey);
         $this->addField($field);
         return $field;
     }
 
-    public function addAction(ActionInterface $action): FormBuilder
+    public function addButton(ButtonInterface $button): void
     {
-        $this->actions[] = $action;
-        return $this;
+        $this->buttons[] = $button;
     }
 
-    public function addSaveAction(string $text = 'Save'): Action\Save
+    /**
+     * @param callable $handler
+     * @param string $name
+     * @return Button
+     */
+    public function addSaveButton($handler, string $name = 'Save'): Button
     {
-        $action = new Action\Save($text, new Action\SaveHandler());
-        $this->addAction($action);
-        return $action;
+        $button = new Button('save', $name, $handler);
+        $this->addButton($button);
+        return $button;
     }
 
-    public function addCloseAction(string $text = 'Close'): Action\Close
+    /**
+     * @param callable|null $handler
+     * @param string $name
+     * @return Button
+     */
+    public function addCancelButton($handler = null, string $name = 'Cancel'): Button
     {
-        $action = new Action\Close($text, new Action\CloseHandler());
-        $this->addAction($action);
-        return $action;
+        $button = new Button('cancel', $name, $handler);
+        $this->addButton($button);
+        return $button;
     }
 }

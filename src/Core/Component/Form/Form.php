@@ -6,24 +6,20 @@ declare(strict_types=1);
 namespace Percas\Core\Component\Form;
 
 
-use Percas\Core\Component\Form\Action\ActionInterface;
-use Percas\Core\Component\Form\DataSource\DataSourceInterface;
-use Percas\Core\Component\Form\Exception\ValidationException;
+use Percas\Core\Component\Form\Button\ButtonInterface;
 use Percas\Core\Component\Form\Field\FieldInterface;
-use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\ValidatorBuilder;
 
 class Form
 {
     /**
-     * @var DataSourceInterface
+     * @var string
      */
-    private $dataSource;
+    private $action;
 
     /**
-     * @var int
+     * @var object|array|\stdClass
      */
-    private $primaryKeyValue;
+    private $data;
 
     /**
      * @var FieldInterface[]
@@ -31,62 +27,23 @@ class Form
     private $fields;
 
     /**
-     * @var ActionInterface[]
+     * @var ButtonInterface[]
      */
-    private $actions;
-
-    /**
-     * @var string
-     */
-    private $action;
+    private $buttons;
 
     /**
      * Form constructor.
-     * @param DataSourceInterface $dataSource
-     * @param int $primaryKeyValue
-     * @param FieldInterface[] $fields
-     * @param ActionInterface[] $actions
      * @param string $action
+     * @param array|object|\stdClass $data
+     * @param FieldInterface[] $fields
+     * @param ButtonInterface[] $buttons
      */
-    public function __construct(DataSourceInterface $dataSource, int $primaryKeyValue, array $fields, array $actions, string $action)
+    public function __construct(string $action, $data, array $fields, array $buttons)
     {
-        $this->dataSource = $dataSource;
-        $this->primaryKeyValue = $primaryKeyValue;
-        $this->fields = $fields;
-        $this->actions = $actions;
         $this->action = $action;
-    }
-
-    public function handleSubmit(): void
-    {
-        $this->validate();
-
-        foreach ($this->actions as $action) {
-            if ($this->action === $action->getName()) {
-                $action->handle($this);
-                break;
-            }
-        }
-    }
-
-    private function validate(): void
-    {
-        $validator = (new ValidatorBuilder())->getValidator();
-        $errors = [];
-
-        foreach ($this->fields as $field) {
-            $fieldErrors = $validator->validate($field->getValue(), $field->getConstraints());
-            $key = $field->getKey();
-
-            /** @var ConstraintViolationInterface $fieldError */
-            foreach ($fieldErrors as $fieldError) {
-                $errors[$key][] = $fieldError->getMessage();
-            }
-        }
-
-        if (count($errors) > 0) {
-            throw new ValidationException($errors);
-        }
+        $this->data = $data;
+        $this->fields = $fields;
+        $this->buttons = $buttons;
     }
 
     public function isSubmitted(): bool
@@ -94,25 +51,26 @@ class Form
         return $this->action !== '';
     }
 
-    public function save(): void
+    public function handleSubmit(): void
     {
-        $this->dataSource->update($this->fields, $this->primaryKeyValue);
+        if (!$this->isSubmitted()) {
+            return;
+        }
+
+        foreach ($this->buttons as $button) {
+            if ($button->getKey() === $this->action) {
+                $button->handle($this);
+                break;
+            }
+        }
     }
 
     /**
-     * @return int
+     * @return array|object|\stdClass
      */
-    public function getPrimaryKeyValue(): int
+    public function getData()
     {
-        return $this->primaryKeyValue;
-    }
-
-    /**
-     * @return DataSourceInterface
-     */
-    public function getDataSource(): DataSourceInterface
-    {
-        return $this->dataSource;
+        return $this->data;
     }
 
     /**
@@ -124,10 +82,10 @@ class Form
     }
 
     /**
-     * @return ActionInterface[]
+     * @return ButtonInterface[]
      */
-    public function getActions(): array
+    public function getButtons(): array
     {
-        return $this->actions;
+        return $this->buttons;
     }
 }

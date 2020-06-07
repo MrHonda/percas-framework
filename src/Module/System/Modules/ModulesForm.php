@@ -7,11 +7,8 @@ namespace Percas\Module\System\Modules;
 
 
 use Doctrine\ORM\EntityManagerInterface;
-use Percas\Core\Component\Form\DataSource\DoctrineDataSource;
-use Percas\Core\Component\Form\Exception\ValidationException;
 use Percas\Core\Component\Form\Form;
 use Percas\Core\Component\Form\FormBuilder;
-use Percas\Core\Component\Form\Response;
 use Percas\Entity\System\Module;
 
 
@@ -33,28 +30,29 @@ class ModulesForm
 
     public function create(int $id): Form
     {
-        $builder = new FormBuilder(new DoctrineDataSource($this->em, Module::class), $id);
+        /** @var Module $module */
+        $module = $this->em->find(Module::class, $id);
+        $builder = new FormBuilder($module);
 
         $builder->addTextField('name', 'Name');
-        $builder
-            ->addTextField('link', 'Link')
-            ->required();
+        $builder->addTextField('link', 'Link');
 
-        $builder->addSaveAction();
-        $builder->addCloseAction();
+        $builder->addSaveButton($this->saveHandler());
+        $builder->addCancelButton();
 
-        return $builder->build();
+        $form = $builder->build();
+        $form->handleSubmit();
+
+        return $form;
     }
 
-    public function handleSubmit(Form $form): Response\ResponseInterface
+    private function saveHandler(): callable
     {
-        try {
-            $form->handleSubmit();
-            return new Response\Success();
-        } catch (ValidationException $e) {
-            return new Response\Invalid($e->getErrors());
-        } catch (\Exception $e) {
-            return new Response\Error($e->getMessage());
-        }
+        $em = $this->em;
+        return static function (Form $form) use ($em) {
+//            dd($form->getData());
+            $em->persist($form->getData());
+            $em->flush();
+        };
     }
 }

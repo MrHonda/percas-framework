@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Component\Form\DataSource;
+namespace Percas\Core\Component\Form1\DataSource;
 
 
-use Percas\Core\Component\Form\Field\FieldInterface;
+use Percas\Core\Component\Form1\Field\FieldInterface;
 
 interface DataSourceInterface
 {

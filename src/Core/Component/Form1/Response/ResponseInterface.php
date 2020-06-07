@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Percas\Core\Component\Form\Response;
+namespace Percas\Core\Component\Form1\Response;
 
 
 interface ResponseInterface

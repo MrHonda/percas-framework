@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Component\Form\DataReader;
+namespace Percas\Core\Component\Form1\DataReader;
 
 
 interface DataReaderInterface

@@ -6,17 +6,13 @@ declare(strict_types=1);
 namespace Percas\Core\Component\Form\Field;
 
 
-use Symfony\Component\Validator\Constraint;
-
 interface FieldInterface
 {
-    public function getType(): string;
-
     public function getKey(): string;
 
     public function getName(): string;
 
-    public function getDataSourceKey(): string;
+    public function getDataKey(): string;
 
     /**
      * @return mixed
@@ -24,16 +20,12 @@ interface FieldInterface
     public function getValue();
 
     /**
-     * @param mixed $value
+     * @return string|int|float
      */
-    public function setValue($value);
+    public function getDisplayValue();
 
     /**
-     * @return Constraint[]
+     * @param mixed $value
      */
-    public function getConstraints(): array;
-
-    public function addConstraint(Constraint $constraint): void;
-
-    public function required(): void;
+    public function setValue($value): void;
 }

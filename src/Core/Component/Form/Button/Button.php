@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Component\Form\Field;
+namespace Percas\Core\Component\Form\Button;
 
 
-abstract class AbstractField implements FieldInterface
+use Percas\Core\Component\Form\Form;
+
+class Button implements ButtonInterface
 {
     /**
      * @var string
@@ -19,21 +21,20 @@ abstract class AbstractField implements FieldInterface
     protected $name;
 
     /**
-     * @var string
+     * @var callable|null
      */
-    protected $dataKey;
+    protected $handler;
 
     /**
-     * AbstractField constructor.
      * @param string $key
      * @param string $name
-     * @param string $dataKey
+     * @param callable|null $handler
      */
-    public function __construct(string $key, string $name, string $dataKey = '')
+    public function __construct(string $key, string $name, ?callable $handler)
     {
         $this->key = $key;
         $this->name = $name;
-        $this->dataKey = $dataKey !== '' ? $dataKey : $key;
+        $this->handler = $handler;
     }
 
     public function getKey(): string
@@ -46,8 +47,10 @@ abstract class AbstractField implements FieldInterface
         return $this->name;
     }
 
-    public function getDataKey(): string
+    public function handle(Form $form): void
     {
-        return $this->dataKey;
+        if ($this->handler) {
+            call_user_func($this->handler, $form);
+        }
     }
 }

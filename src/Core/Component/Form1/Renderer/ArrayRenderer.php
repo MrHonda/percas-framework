@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 
-namespace Percas\Core\Component\Form\Renderer;
+namespace Percas\Core\Component\Form1\Renderer;
 
 
-use Percas\Core\Component\Form\Form;
-use Percas\Core\Component\Form\Response\ResponseInterface;
+use Percas\Core\Component\Form1\Form;
+use Percas\Core\Component\Form1\Response\ResponseInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;

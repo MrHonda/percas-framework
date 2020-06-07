@@ -13,15 +13,18 @@ class Text extends AbstractField
      */
     private $value;
 
-    public function getType(): string
+    /**
+     * @return string
+     */
+    public function getValue(): string
     {
-        return 'text';
+        return $this->value;
     }
 
     /**
      * @return string
      */
-    public function getValue(): string
+    public function getDisplayValue(): string
     {
         return $this->value;
     }
