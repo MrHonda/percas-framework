@@ -5,10 +5,8 @@ declare(strict_types=1);
 
 namespace Percas\Controller\System;
 
-use Percas\Core\Component\Grid\Renderer as GridRenderer;
-use Percas\Module\System\Modules\ModulesForm;
-use Percas\Module\System\Modules\ModulesGrid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,64 +17,70 @@ class ModulesController extends AbstractController
 {
     /**
      * @Route("", methods={"GET"})
-     * @param ModulesGrid $gridComponent
      * @return Response
      */
-    public function grid(ModulesGrid $gridComponent): Response
+    public function grid(): Response
     {
-        $grid = $gridComponent->create();
-        $renderer = new GridRenderer\JsonRenderer();
-        return new Response($renderer->render($grid));
+        $data = [];
+        $data['headers'] = [
+            ['text' => 'Name', 'value' => 'name'],
+            ['text' => 'Link', 'value' => 'link'],
+            ['text' => '', 'value' => 'actions', 'width' => 100, 'sortable' => false],
+        ];
+        $data['rows'] = [];
+
+        for ($i = 1; $i <= 10; $i++) {
+            $data['rows'][] = [
+                'id' => $i,
+                'name' => 'Module ' . $i,
+                'link' => '/module-' . $i,
+                'actions' => [
+                    ['key' => 'edit', 'name' => 'Edit', 'icon' => 'mdi-pencil'],
+                    ['key' => 'delete', 'name' => 'Delete', 'icon' => 'mdi-delete'],
+                ]
+            ];
+        }
+        return $this->json($data);
     }
 
     /**
-     * @Route("/{id}")
-     * @param ModulesForm $formComponent
+     * @Route("/{id}", methods={"GET"})
      * @param int $id
      * @return Response
      */
-    public function form(ModulesForm $formComponent, int $id): Response
+    public function form(int $id): Response
     {
-        $form = $formComponent->create($id);
-        dd($form);
+        $data = [];
+        $data['fields'] = [
+            'name' => ['key' => 'name', 'name' => 'Name', 'icon' => 'mdi-tag', 'value' => 'Module ' . $id],
+            'link' => ['key' => 'link', 'name' => 'Link', 'icon' => 'mdi-tag', 'value' => '/module-' . $id],
+        ];
+        $data['buttons'] = [
+            'save' => ['key' => 'save', 'name' => 'Save', 'icon' => 'mdi-content-save', 'color' => 'primary', 'outlined' => false],
+            'cancel' => ['key' => 'cancel', 'name' => 'Canel', 'icon' => 'mdi-cancel', 'color' => 'default', 'outlined' => true],
+        ];
+        return $this->json($data);
     }
 
-//    /**
-//     * @Route("/form2/{id}")
-//     * @param EntityManagerInterface $em
-//     * @param int $id
-//     * @return Response
-//     */
-//    public function form2(EntityManagerInterface $em, int $id): Response
-//    {
-//        $builder = new FormBuilder($em->find(Module::class, $id));
-//
-//        $field = new Field('name', 'Name');
-//        $builder->addField($field);
-//
-//        $field = new Field('link', 'Link');
-//        $field->addConstraint(new NotBlank());
-//        $builder->addField($field);
-//
-//        $action = new Action('save', 'Save', $this->saveActionHandler($em));
-//
-//        $builder->addAction($action);
-//
-//        $form = $builder->build();
-//
-//        $form->handleSubmit();
-//
-//        $renderer = new Renderer();
-//        $renderer->render($form);
-//    }
-//
-//    private function saveActionHandler(EntityManagerInterface $em): callable
-//    {
-//        return static function (Form $form) use ($em) {
-//            /** @var Module $module */
-//            $module = $form->getData();
-//            $em->persist($module);
-//            $em->flush();
-//        };
-//    }
+    /**
+     * @Route("/{id}", methods={"POST"})
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function formSubmit(Request $request, int $id): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        return $this->json($data);
+    }
+
+    /**
+     * @Route("/{id}", methods={"DELETE"})
+     * @param int $id
+     * @return Response
+     */
+    public function formDelete(int $id): Response
+    {
+        return $this->json(['action' => 'delete', 'id' => $id]);
+    }
 }
