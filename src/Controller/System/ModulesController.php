@@ -31,12 +31,15 @@ class ModulesController extends AbstractController
 
         for ($i = 1; $i <= 10; $i++) {
             $data['rows'][] = [
-                'id' => $i,
-                'name' => 'Module ' . $i,
-                'link' => '/module-' . $i,
+                'id' => ['type' => 'hidden', 'value' => $i],
+                'name' => ['type' => 'text', 'value' => 'Module ' . $i],
+                'link' => ['type' => 'text', 'value' => '/module-' . $i],
                 'actions' => [
-                    ['key' => 'edit', 'name' => 'Edit', 'icon' => 'mdi-pencil'],
-                    ['key' => 'delete', 'name' => 'Delete', 'icon' => 'mdi-delete'],
+                    'type' => 'actions',
+                    'value' => [
+                        ['key' => 'edit', 'name' => 'Edit', 'icon' => 'mdi-pencil'],
+                        ['key' => 'delete', 'name' => 'Delete', 'icon' => 'mdi-delete']
+                    ],
                 ]
             ];
         }
