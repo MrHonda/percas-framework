@@ -55,8 +55,8 @@ class ModulesController extends AbstractController
     {
         $data = [];
         $data['fields'] = [
-            'name' => ['key' => 'name', 'name' => 'Name', 'icon' => 'mdi-tag', 'value' => 'Module ' . $id],
-            'link' => ['key' => 'link', 'name' => 'Link', 'icon' => 'mdi-tag', 'value' => '/module-' . $id],
+            'name' => ['type' => 'text', 'key' => 'name', 'name' => 'Name', 'icon' => 'mdi-tag', 'value' => 'Module ' . $id],
+            'link' => ['type' => 'text', 'key' => 'link', 'name' => 'Link', 'icon' => 'mdi-tag', 'value' => '/module-' . $id],
         ];
         $data['buttons'] = [
             'save' => ['key' => 'save', 'name' => 'Save', 'icon' => 'mdi-content-save', 'color' => 'primary', 'outlined' => false],
