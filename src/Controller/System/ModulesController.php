@@ -29,20 +29,34 @@ class ModulesController extends AbstractController
             ['text' => '', 'value' => 'actions', 'width' => 100, 'sortable' => false],
         ];
         if ($request->isMethod('POST')) {
-            $data['filters'] = json_decode($request->getContent(), true)['filters'];
+            $json = json_decode($request->getContent(), true);
+            $data['filters'] = $json['filters'];
+            $data['options'] = $json['options'];
         } else {
             $data['filters'] = [
                 ['type' => 'text', 'key' => 'name', 'name' => 'Name', 'icon' => 'mdi-tag', 'value' => '', 'col' => 4],
                 ['type' => 'text', 'key' => 'link', 'name' => 'Link', 'icon' => 'mdi-tag', 'value' => '', 'col' => 4],
             ];
+            $data['options'] = [
+                'page' => 1,
+                'itemsPerPage' => 10,
+                'sortBy' => ['name'],
+                'sortDesc' => [false],
+                'groupBy' => [],
+                'groupDesc' => [],
+                'multiSort' => false,
+                'mustSort' => false
+            ];
         }
+        $data['totalRows'] = 50;
         $data['rows'] = [];
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= $data['options']['itemsPerPage']; $i++) {
+            $index = $i + ($data['options']['page'] - 1) * $data['options']['itemsPerPage'];
             $data['rows'][] = [
-                'id' => ['type' => 'hidden', 'value' => $i],
-                'name' => ['type' => 'text', 'value' => 'Module ' . $i],
-                'link' => ['type' => 'text', 'value' => '/module-' . $i],
+                'id' => ['type' => 'hidden', 'value' => $index],
+                'name' => ['type' => 'text', 'value' => 'Module ' . $index],
+                'link' => ['type' => 'text', 'value' => '/module-' . $index],
                 'actions' => [
                     'type' => 'actions',
                     'value' => [
