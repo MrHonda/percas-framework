@@ -16,10 +16,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class ModulesController extends AbstractController
 {
     /**
-     * @Route("", methods={"GET"})
+     * @Route("", methods={"GET", "POST"})
+     * @param Request $request
      * @return Response
      */
-    public function grid(): Response
+    public function grid(Request $request): Response
     {
         $data = [];
         $data['headers'] = [
@@ -27,6 +28,14 @@ class ModulesController extends AbstractController
             ['text' => 'Link', 'value' => 'link'],
             ['text' => '', 'value' => 'actions', 'width' => 100, 'sortable' => false],
         ];
+        if ($request->isMethod('POST')) {
+            $data['filters'] = json_decode($request->getContent(), true)['filters'];
+        } else {
+            $data['filters'] = [
+                ['type' => 'text', 'key' => 'name', 'name' => 'Name', 'icon' => 'mdi-tag', 'value' => '', 'col' => 4],
+                ['type' => 'text', 'key' => 'link', 'name' => 'Link', 'icon' => 'mdi-tag', 'value' => '', 'col' => 4],
+            ];
+        }
         $data['rows'] = [];
 
         for ($i = 1; $i <= 10; $i++) {
